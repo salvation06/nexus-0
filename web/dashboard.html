@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEXUS-0 | Sovereign Link Control</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;700&family=Space+Mono&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #05070a;
+            --accent-blue: #00f2ff;
+            --accent-gold: #ffcc00;
+            --text-color: #e0e0e0;
+            --danger-red: #ff3333;
+            --surface-color: rgba(15, 20, 30, 0.8);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Outfit', sans-serif;
+            overflow: hidden;
+            background-image: radial-gradient(circle at center, #0a1122 0%, #05070a 100%);
+        }
+
+        #dashboard {
+            display: grid;
+            grid-template-columns: 350px 1fr 300px;
+            height: 100vh;
+            padding: 20px;
+            gap: 20px;
+        }
+
+        /* Sidebar Glassmorphism */
+        .panel {
+            background: var(--surface-color);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--accent-blue);
+            margin-bottom: 10px;
+            border-bottom: 2px solid var(--accent-blue);
+            padding-bottom: 5px;
+        }
+
+        .metrics {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .metric-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .metric-card .label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            color: #888;
+        }
+
+        .metric-card .value {
+            font-size: 1.2rem;
+            font-weight: bold;
+            font-family: 'Space Mono', monospace;
+            color: var(--accent-blue);
+        }
+
+        #mesh-canvas {
+            width: 100%;
+            height: 100%;
+            cursor: crosshair;
+        }
+
+        .node-list {
+            overflow-y: auto;
+            flex-grow: 1;
+        }
+
+        .node-item {
+            padding: 10px;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.03);
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            border-left: 3px solid #444;
+            transition: 0.3s;
+        }
+
+        .node-item.anchor {
+            border-left-color: var(--accent-gold);
+            background: rgba(255, 204, 0, 0.05);
+        }
+
+        .node-item.self {
+            border-left-color: var(--accent-blue);
+        }
+
+        .status-pill {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 5px;
+            background: #444;
+        }
+
+        .status-active {
+            background: #00ff00;
+            box-shadow: 0 0 10px #00ff00;
+        }
+
+        #log {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.75rem;
+            color: #aaa;
+            height: 200px;
+            overflow-y: auto;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 10px;
+            background: #000;
+        }
+
+        .mission-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .ego-tag {
+            background: var(--accent-blue);
+            color: #000;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 0.7rem;
+            margin-left: 5px;
+        }
+
+        /* Animations */
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                opacity: 0.8;
+            }
+
+            50% {
+                transform: scale(1.1);
+                opacity: 1;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 0.8;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="dashboard">
+        <!-- System Telemetry -->
+        <div class="panel">
+            <div class="mission-header">
+                <div style="margin-right: 10px;">
+                    <svg width="40" height="40" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M50 5L95 27.5V72.5L50 95L5 72.5V27.5L50 5Z" stroke="var(--accent-blue)"
+                            stroke-width="4" />
+                        <circle cx="50" cy="50" r="15" fill="var(--accent-blue)" />
+                    </svg>
+                </div>
+                <div>
+                    <h1>NEXUS-0</h1>
+                    <p style="font-size: 0.7rem; color: #888;">SOVEREIGN LINK ACTIVE</p>
+                </div>
+            </div>
+
+            <div class="metrics">
+                <div class="metric-card">
+                    <div class="label">Mesh Size</div>
+                    <div id="mesh-size" class="value">0</div>
+                </div>
+                <div class="metric-card">
+                    <div class="label">Last Epoch</div>
+                    <div id="last-epoch" class="value">--</div>
+                </div>
+            </div>
+
+            <div style="margin-top: 10px;">
+                <p style="font-size: 0.8rem; margin-bottom: 5px;">Active Nodes</p>
+                <div id="node-list" class="node-list">
+                    <!-- Nodes will appear here -->
+                </div>
+            </div>
+
+            <div style="margin-top: 10px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px;">
+                <button id="hurricane-btn" onclick="triggerHurricane()"
+                    style="width: 100%; background: var(--danger-red); color: white; border: none; padding: 10px; border-radius: 6px; cursor: pointer; font-weight: bold; font-family: 'Outfit', sans-serif; text-transform: uppercase; letter-spacing: 1px;">
+                    Initiate Failover Protocol
+                </button>
+                <p style="font-size: 0.6rem; color: #666; margin-top: 5px; text-align: center;">Simulates sudden Anchor
+                    node failure.</p>
+            </div>
+
+            <div id="log">
+                [SYSTEM] Initializing Sovereign Link...
+            </div>
+        </div>
+
+        <!-- Visual Mesh -->
+        <div style="position: relative;">
+            <canvas id="mesh-canvas"></canvas>
+            <div
+                style="position: absolute; bottom: 20px; left: 20px; background: rgba(0,0,0,0.5); padding: 10px; border-radius: 8px; font-size: 0.8rem;">
+                <span style="color: var(--accent-gold);">●</span> Anchor Node (Truth Source) <br>
+                <span style="color: var(--accent-blue);">●</span> Field Peer
+            </div>
+        </div>
+
+        <!-- Node Inspector -->
+        <div class="panel">
+            <h1>Inspector</h1>
+            <div id="inspector-content" style="font-size: 0.9rem; color: #aaa;">
+                Select a node to inspect its Deterministic Truth state.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('mesh-canvas');
+        const ctx = canvas.getContext('2d');
+        const nodeList = document.getElementById('node-list');
+        const meshSizeEl = document.getElementById('mesh-size');
+        const logEl = document.getElementById('log');
+
+        let nodes = [];
+        let anchorId = null;
+        let isAnchor = false;
+        let ws;
+        let activeSyncs = [];
+
+        function resize() {
+            canvas.width = canvas.parentElement.clientWidth;
+            canvas.height = canvas.parentElement.clientHeight;
+        }
+        window.onresize = resize;
+        resize();
+
+        function log(msg) {
+            const time = new Date().toLocaleTimeString();
+            logEl.innerHTML += `<div>[${time}] ${msg}</div>`;
+            logEl.scrollTop = logEl.scrollHeight;
+        }
+
+        function connect() {
+            log("Attempting to bind to NMC Gateway (Safe Link)...");
+            const protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            ws = new WebSocket(`${protocol}//${location.host}/ws`);
+
+            ws.onopen = () => {
+                log("Sovereign Link Established.");
+                ws.send(JSON.stringify({ action: 'scan' }));
+            };
+
+            ws.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                if (data.type === 'mesh_update' || data.type === 'scan_result') {
+                    updateMesh(data);
+                } else if (data.type === 'maritime_sync') {
+                    handleSync(data);
+                }
+            };
+
+            ws.onclose = () => {
+                log("Link Lost. Reconnecting...");
+                setTimeout(connect, 2000);
+            };
+        }
+
+        function updateMesh(data) {
+            const rawNodes = data.nodes || [];
+            const oldAnchor = anchorId;
+            anchorId = data.anchor_id;
+            isAnchor = data.is_anchor;
+
+            if (oldAnchor && anchorId && oldAnchor !== anchorId) {
+                log(`🚨 SUCCESSION DETECTED: New Anchor at ${anchorId}`);
+            }
+
+            // Sync internal state
+            const newNodes = rawNodes.map(rn => {
+                const existing = nodes.find(n => n.name === rn.name);
+                return {
+                    ...rn,
+                    x: existing ? existing.x : Math.random() * (canvas.width - 100) + 50,
+                    y: existing ? existing.y : Math.random() * (canvas.height - 100) + 50,
+                    vx: 0,
+                    vy: 0
+                };
+            });
+            nodes = newNodes;
+            meshSizeEl.innerText = nodes.length + 1; // +1 for self
+
+            // Update List UI
+            nodeList.innerHTML = nodes.map(n => `
+                <div class="node-item ${n.address.includes(anchorId) ? 'anchor' : ''}">
+                    <span class="status-pill status-active"></span>
+                    ${n.name} <span class="ego-tag">EGO: ${n.ego_score}</span>
+                    <div style="font-size: 0.6rem; color: #888;">${n.address}</div>
+                </div>
+            `).join('');
+        }
+
+        function handleSync(data) {
+            log(`💎 SOVEREIGN SYNC: Data Sync between ${data.source} and ${data.target}`);
+            const sourceNode = nodes.find(n => n.name === data.source);
+            const targetNode = nodes.find(n => n.name === data.target);
+
+            if (sourceNode && targetNode) {
+                // Initial particle pulse
+                for (let i = 0; i < 10; i++) {
+                    activeSyncs.push({
+                        x: sourceNode.x,
+                        y: sourceNode.y,
+                        tx: targetNode.x,
+                        ty: targetNode.y,
+                        p: 0,
+                        speed: 0.01 + Math.random() * 0.02
+                    });
+                }
+            }
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw Connections
+            nodes.forEach(n => {
+                nodes.forEach(m => {
+                    if (n === m) return;
+                    const dist = Math.sqrt((n.x - m.x) ** 2 + (n.y - m.y) ** 2);
+                    if (dist < 400) {
+                        ctx.beginPath();
+                        ctx.moveTo(n.x, n.y);
+                        ctx.lineTo(m.x, m.y);
+                        ctx.strokeStyle = `rgba(0, 242, 255, ${1 - dist / 400})`;
+                        ctx.lineWidth = 1;
+                        ctx.stroke();
+                    }
+                });
+            });
+
+            // Draw Sync Particles
+            activeSyncs = activeSyncs.filter(s => s.p < 1);
+            activeSyncs.forEach(s => {
+                s.p += s.speed;
+                const px = s.x + (s.tx - s.x) * s.p;
+                const py = s.y + (s.ty - s.y) * s.p;
+
+                ctx.beginPath();
+                ctx.arc(px, py, 2, 0, Math.PI * 2);
+                ctx.fillStyle = varValue('--accent-gold');
+                ctx.shadowBlur = 5;
+                ctx.shadowColor = varValue('--accent-gold');
+                ctx.fill();
+                ctx.shadowBlur = 0;
+            });
+
+            // Draw Nodes
+            nodes.forEach(n => {
+                const isAnchorNode = n.address.includes(anchorId);
+
+                // Glow
+                ctx.beginPath();
+                ctx.arc(n.x, n.y, 25, 0, Math.PI * 2);
+                const grd = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, 25);
+                grd.addColorStop(0, isAnchorNode ? 'rgba(255, 204, 0, 0.3)' : 'rgba(0, 242, 255, 0.2)');
+                grd.addColorStop(1, 'transparent');
+                ctx.fillStyle = grd;
+                ctx.fill();
+
+                // Core
+                ctx.beginPath();
+                ctx.arc(n.x, n.y, 6, 0, Math.PI * 2);
+                ctx.fillStyle = isAnchorNode ? varValue('--accent-gold') : varValue('--accent-blue');
+                ctx.shadowBlur = 15;
+                ctx.shadowColor = ctx.fillStyle;
+                ctx.fill();
+                ctx.shadowBlur = 0;
+
+                // Label
+                ctx.fillStyle = "#fff";
+                ctx.font = "bold 12px Outfit";
+                ctx.textAlign = "center";
+                ctx.fillText(n.name, n.x, n.y + 25);
+
+                // Physics (very simple drift)
+                n.x += (Math.random() - 0.5) * 0.2;
+                n.y += (Math.random() - 0.5) * 0.2;
+            });
+
+            requestAnimationFrame(draw);
+        }
+
+        async function triggerHurricane() {
+            log("⚠️ CRITICAL: Initiating Hurricane Zero Simulation...");
+            document.getElementById('hurricane-btn').disabled = true;
+            document.getElementById('hurricane-btn').style.opacity = 0.5;
+
+            // Target the known Anchor in the container mesh (Alpha)
+            try {
+                const response = await fetch('/kill?target=alpha', { method: 'POST' });
+                const result = await response.json();
+                if (result.status === 'success') {
+                    log("💥 ANCHOR LOSS DETECTED. Monitoring mesh for autonomous failover (T+15s)...");
+                    startFailoverTimer();
+                } else {
+                    log(`❌ ERROR: ${result.msg}`);
+                }
+            } catch (e) {
+                log(`❌ ERROR: Could not reach Sovereign Link.`);
+            }
+        }
+
+        let timerInterval;
+        function startFailoverTimer() {
+            let seconds = 0;
+            const btn = document.getElementById('hurricane-btn');
+            timerInterval = setInterval(() => {
+                seconds++;
+                btn.innerText = `FAILOVER ELAPSED: ${seconds}s`;
+
+                // If we detect a new anchor, clear the timer
+                if (anchorId && !anchorId.includes('alpha')) {
+                    clearInterval(timerInterval);
+                    btn.innerText = "MISSION CONTINUITY SECURED";
+                    btn.style.background = "#00ff00";
+                    log("✅ DETERMINISTIC SUCCESSION COMPLETE.");
+                }
+
+                if (seconds > 30) {
+                    clearInterval(timerInterval);
+                    btn.innerText = "FAILOVER TIMEOUT";
+                    log("❌ ERROR: Failover timed out.");
+                }
+            }, 1000);
+        }
+
+        function varValue(name) {
+            return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+        }
+
+        connect();
+        draw();
+    </script>
+</body>
+
+</html>

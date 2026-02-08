@@ -1,0 +1,29 @@
+# Ignore everything by default
+*
+
+# But include these files/directories needed for the Cloud Run demo
+!bridge_server.py
+!nx0mesh_sdk.py
+!requirements.txt
+!Dockerfile
+!.gitignore
+!README.md
+
+# Include the entire web directory
+!web/
+!web/**
+
+# Include static assets
+!web/static/
+!web/static/**
+
+# Exclude Python cache even if accidentally created
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Exclude environment files
+.env
+.env.yaml
+.env.local

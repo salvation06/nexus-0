@@ -1,0 +1,333 @@
+/* ARTEMIS System 7 Styles */
+:root {
+    --sys-gray: #2d2d2d;
+    --sys-bg: #1a1a1a;
+    --sys-border: #4a4a4a;
+    --sys-highlight: #ffcc00;
+    /* Amber for retro feel */
+    --neon-blue: #00f3ff;
+    --neon-red: #ff3333;
+    --neon-green: #33ff33;
+    --neon-amber: #ffcc00;
+
+    /* Dynamic Theme Color - Controlled by JS */
+    --theme-color: var(--neon-blue);
+    --vibe-intensity: 0.5;
+}
+
+@font-face {
+    font-family: 'Chicago';
+    src: local('Chicago'), url('https://fonts.cdnfonts.com/s/15442/ChicagoFLF.woff') format('woff');
+}
+
+body {
+    background-color: #000;
+    color: #fff;
+    font-family: 'Chicago', sans-serif;
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-image:
+        linear-gradient(rgba(0, 20, 0, 0.9), rgba(0, 10, 0, 0.9)),
+        repeating-linear-gradient(0deg, transparent, transparent 2px, #000 3px);
+    background-size: cover;
+    overflow: hidden;
+}
+
+/* scanline effect */
+body::before {
+    content: " ";
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+    z-index: 2;
+    background-size: 100% 2px, 3px 100%;
+    pointer-events: none;
+    animation: flicker 0.15s infinite;
+    opacity: var(--vibe-intensity);
+}
+
+@keyframes flicker {
+    0% {
+        opacity: 0.2;
+    }
+
+    5% {
+        opacity: 0.1;
+    }
+
+    10% {
+        opacity: 0.3;
+    }
+
+    15% {
+        opacity: 0.2;
+    }
+
+    25% {
+        opacity: 0.3;
+    }
+
+    30% {
+        opacity: 0.1;
+    }
+
+    100% {
+        opacity: 0.2;
+    }
+}
+
+@keyframes glitch {
+    0% {
+        transform: translate(0);
+    }
+
+    20% {
+        transform: translate(-2px, 2px);
+    }
+
+    40% {
+        transform: translate(-2px, -2px);
+    }
+
+    60% {
+        transform: translate(2px, 2px);
+    }
+
+    80% {
+        transform: translate(2px, -2px);
+    }
+
+    100% {
+        transform: translate(0);
+    }
+}
+
+.glitch {
+    animation: glitch 0.2s infinite;
+    color: var(--neon-red) !important;
+}
+
+.window {
+    width: 90vw;
+    height: 90vh;
+    background: var(--sys-bg);
+    border: 2px solid var(--theme-color);
+    box-shadow: 0 0 20px var(--theme-color), inset 0 0 10px var(--theme-color);
+    display: flex;
+    flex-direction: column;
+    z-index: 1;
+    position: relative;
+}
+
+.title-bar {
+    background: var(--theme-color);
+    color: #000;
+    padding: 4px 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.title-bar .controls button {
+    width: 16px;
+    height: 16px;
+    border: 1px solid #000;
+    background: #fff;
+    margin-left: 4px;
+    cursor: pointer;
+}
+
+.content {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 250px 1fr 300px;
+    gap: 2px;
+    padding: 2px;
+    background: var(--sys-border);
+}
+
+.panel {
+    background: var(--sys-gray);
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+h2 {
+    border-bottom: 2px dotted var(--theme-color);
+    margin-top: 0;
+    padding-bottom: 5px;
+    font-size: 14px;
+    color: var(--theme-color);
+}
+
+/* Netatalk List */
+#network-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    overflow-y: auto;
+}
+
+#network-list li {
+    padding: 8px;
+    border: 1px solid transparent;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+#network-list li:hover {
+    background: #000;
+    border-color: var(--theme-color);
+}
+
+#network-list li.active {
+    background: var(--theme-color);
+    color: #000;
+}
+
+.ego-bar {
+    height: 4px;
+    background: #444;
+    margin-top: 4px;
+    position: relative;
+}
+
+.ego-fill {
+    height: 100%;
+    background: var(--neon-green);
+    transition: width 0.5s ease-in-out;
+}
+
+.load-bar {
+    height: 2px;
+    background: #222;
+    margin-top: 2px;
+}
+
+.load-fill {
+    height: 100%;
+    background: var(--neon-amber);
+    transition: width 0.5s ease-in-out;
+}
+
+.node-status-tag {
+    font-size: 8px;
+    padding: 1px 3px;
+    border: 1px solid currentColor;
+    margin-left: auto;
+    text-transform: uppercase;
+}
+
+/* Chat Area */
+#chat-history {
+    flex: 1;
+    overflow-y: auto;
+    border: 1px solid #000;
+    background: #111;
+    padding: 10px;
+    margin-bottom: 10px;
+    font-family: 'Courier New', monospace;
+}
+
+.msg {
+    margin-bottom: 8px;
+    padding: 5px;
+    border-left: 2px solid #555;
+}
+
+.msg.sent {
+    border-color: var(--theme-color);
+    background: #1a1a2e;
+}
+
+.msg.received {
+    border-color: #fff;
+    background: #222;
+}
+
+.msg-header {
+    font-size: 10px;
+    opacity: 0.7;
+    margin-bottom: 2px;
+}
+
+.msg-body {
+    font-size: 12px;
+}
+
+.input-area {
+    display: flex;
+    gap: 5px;
+}
+
+textarea {
+    flex: 1;
+    background: #000;
+    border: 1px solid var(--theme-color);
+    color: var(--theme-color);
+    padding: 5px;
+    font-family: 'Courier New', monospace;
+    resize: none;
+    height: 40px;
+}
+
+button.btn {
+    background: var(--sys-gray);
+    color: var(--theme-color);
+    border: 1px solid var(--theme-color);
+    cursor: pointer;
+    padding: 0 15px;
+    font-family: 'Chicago', sans-serif;
+    transition: all 0.2s;
+}
+
+button.btn:hover {
+    background: var(--theme-color);
+    color: #000;
+    box-shadow: 0 0 10px var(--theme-color);
+}
+
+/* Vision Panel */
+#camera-container {
+    width: 100%;
+    aspect-ratio: 4/3;
+    background: #000;
+    position: relative;
+    border: 1px dashed var(--theme-color);
+    margin-bottom: 10px;
+}
+
+video,
+canvas {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.status-led {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #333;
+    display: inline-block;
+    margin-right: 5px;
+}
+
+.status-led.online {
+    background: var(--neon-green);
+    box-shadow: 0 0 5px var(--neon-green);
+}

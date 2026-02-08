@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEXUS-0 Sovereign Node</title>
+    <link rel="stylesheet" href="css/retro.css">
+</head>
+
+<body>
+    <div class="window">
+        <div class="title-bar">
+            <span><span class="status-led online"></span> NEXUS-0 <span id="node-id">Initializing...</span></span>
+            <span id="mesh-wealth"
+                style="font-size: 10px; border: 1px solid #000; padding: 2px 5px; background: #fff; color: #000;">Wealth:
+                1000 CR</span>
+            <div class="controls">
+                <button></button>
+            </div>
+        </div>
+
+        <div class="content">
+            <h2>Sovereign Link-Local</h2>
+            <div style="flex:1;">
+                <ul id="network-list">
+                    <!-- Populated by JS -->
+                </ul>
+            </div>
+            <button class="btn" id="btn-scan" style="margin-top:5px;">SCAN NETWORK</button>
+
+            <div id="vibe-monitor" style="margin-top: auto; padding-top: 10px; border-top: 1px solid #444;">
+                <h2 style="font-size: 10px; border:none;">VIBE MONITOR</h2>
+                <div class="ego-bar" style="height: 10px; border: 1px solid #555;">
+                    <div id="mesh-ego-avg" class="ego-fill" style="width: 50%;"></div>
+                </div>
+                <div style="font-size: 8px; display: flex; justify-content: space-between; margin-top: 2px;">
+                    <span>IMPULSE (ID)</span>
+                    <span>CONSENSUS (EGO)</span>
+                </div>
+                <div style="font-size: 8px; color: var(--neon-amber); margin-top: 5px;">
+                    PAYLOAD: <span id="node-payload-name">Mining...</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Center Panel: Comms / AI -->
+        <div class="panel">
+            <h2>Communication Log</h2>
+            <div id="chat-history"></div>
+
+            <div class="input-area">
+                <textarea id="msg-input" placeholder="Type orders here..."></textarea>
+                <button class="btn" id="btn-send">SEND</button>
+            </div>
+
+            <div id="mission-control"
+                style="margin-top: 20px; border-top: 2px solid var(--neon-blue); padding-top: 10px;">
+                <h2 style="font-size: 12px; color: var(--neon-blue); border: none;">SOVEREIGN PAYLOAD CONTROL</h2>
+                <div id="mission-log"
+                    style="height: 100px; background: #000; border: 1px solid #333; overflow-y: auto; padding: 5px; font-family: monospace;">
+                    <div style="color: #666; font-style: italic;">No active missions.</div>
+                </div>
+                <button class="btn" id="btn-mission"
+                    style="margin-top: 10px; width: 100%; border-color: var(--neon-blue); color: var(--neon-blue);">REASON
+                    & DEPLOY MISSION</button>
+            </div>
+        </div>
+
+        <!-- Right Panel: Vision / Config -->
+        <div class="panel">
+            <h2>Visual Sensors</h2>
+            <div id="camera-container" style="position: relative;">
+                <video id="video-feed" autoplay playsinline style="width: 100%; border: 1px solid #333;"></video>
+                <div id="sim-overlay"
+                    style="position: absolute; top:0; left:0; width:100%; height:100%; display: none; background: #000; overflow: hidden;">
+                    <img id="sim-img" src="" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.8;">
+                    <div id="sim-label"
+                        style="position: absolute; bottom: 5px; left: 5px; background: rgba(0,0,0,0.7); color: var(--neon-green); font-size: 8px; padding: 2px;">
+                        ENVIRONMENTAL DATA FEED</div>
+                </div>
+                <canvas id="vision-canvas" style="display:none;"></canvas>
+            </div>
+            <button class="btn" id="btn-analyze">ANALYZE VISUAL</button>
+
+            <h2 style="margin-top: 20px;">Configuration</h2>
+            <label style="font-size: 12px; display: block; margin-bottom: 5px;">
+                <input type="checkbox" id="chk-auto-reply"> Auto-Reply (AI)
+            </label>
+            <div style="font-size: 10px; color: #888; margin-top: auto;">
+                Gemini Nano Status: <span id="ai-status">Checking...</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Psych Profile Overlay (Hidden by default) -->
+    <div id="psych-profile"
+        style="position: absolute; bottom: 10px; right: 10px; background: #000; border: 1px solid var(--neon-blue); padding: 5px; font-size: 10px; z-index: 10; width: 150px; display: none;">
+        <div
+            style="color: var(--neon-blue); font-weight: bold; border-bottom: 1px solid var(--neon-blue); margin-bottom: 3px;">
+            PSYCH PROFILE</div>
+        <div id="psych-persona">Persona: Unknown</div>
+        <div id="psych-id">Id-Impulse: Stable</div>
+        <div id="psych-load">Compute Load: 0%</div>
+        <div id="psych-credits">Credits: 0</div>
+        <div id="psych-verdict" style="color: var(--neon-green); margin-top: 2px;">STATUS: HEALTHY</div>
+    </div>
+    </div>
+
+    <script src="js/vision.js"></script>
+    <script src="js/app.js"></script>
+</body>
+
+</html>

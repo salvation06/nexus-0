@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEXUS-0 | When Infrastructure Fails, We Don't</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #05070a;
+            --accent-blue: #00f2ff;
+            --accent-gold: #ffcc00;
+            --text-color: #e0e0e0;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Outfit', sans-serif;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: radial-gradient(circle at center, #0a1122 0%, #05070a 100%);
+            position: relative;
+            text-align: center;
+            padding: 80px 20px;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('https://www.transparenttextures.com/patterns/carbon-fibre.png');
+            opacity: 0.1;
+            pointer-events: none;
+        }
+
+        .logo-container {
+            margin-bottom: 30px;
+            filter: drop-shadow(0 0 30px var(--accent-blue));
+            animation: float 4s ease-in-out infinite;
+        }
+
+        h1 {
+            font-size: clamp(3rem, 10vw, 6rem);
+            letter-spacing: clamp(10px, 2vw, 25px);
+            text-transform: uppercase;
+            background: linear-gradient(90deg, #fff, var(--accent-blue));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 0;
+            font-weight: 900;
+        }
+
+        .tagline {
+            font-size: clamp(1.2rem, 3vw, 2rem);
+            color: var(--accent-gold);
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            margin: 20px 0 40px;
+            font-weight: 700;
+        }
+
+        .hero-description {
+            max-width: 900px;
+            font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+            line-height: 1.8;
+            color: #fff;
+            margin: 0 auto 50px;
+            font-weight: 400;
+        }
+
+        .hero-description strong {
+            color: var(--accent-blue);
+            font-weight: 700;
+        }
+
+        .cta-container {
+            display: flex;
+            gap: 25px;
+            z-index: 10;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 60px;
+        }
+
+        .btn {
+            padding: 22px 50px;
+            border-radius: 50px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-decoration: none;
+            display: inline-block;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-blue), #0088ff);
+            color: #000;
+            border: none;
+            box-shadow: 0 15px 40px rgba(0, 242, 255, 0.4);
+            font-weight: 900;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 20px 60px rgba(0, 242, 255, 0.6);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #fff;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            font-weight: 700;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 1);
+            color: #000;
+            transform: translateY(-5px);
+            border-color: #fff;
+        }
+
+        /* Visual Showcase Section */
+        .showcase {
+            padding: 100px 20px;
+            background: linear-gradient(180deg, #05070a 0%, #0a0f1a 100%);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+
+        .section-header h2 {
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            text-transform: uppercase;
+            letter-spacing: 6px;
+            margin-bottom: 25px;
+            background: linear-gradient(90deg, #fff, var(--accent-blue));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 900;
+        }
+
+        .section-header p {
+            color: #aaa;
+            font-size: 1.3rem;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.7;
+        }
+
+        .demo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 50px;
+            margin-bottom: 80px;
+        }
+
+        .demo-card {
+            background: rgba(15, 20, 30, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 242, 255, 0.2);
+            border-radius: 20px;
+            overflow: hidden;
+            transition: 0.4s;
+        }
+
+        .demo-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--accent-blue);
+            box-shadow: 0 20px 60px rgba(0, 242, 255, 0.3);
+        }
+
+        .demo-card img {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-bottom: 2px solid rgba(0, 242, 255, 0.3);
+        }
+
+        .demo-card-content {
+            padding: 35px;
+        }
+
+        .demo-card h3 {
+            color: var(--accent-blue);
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 700;
+        }
+
+        .demo-card p {
+            color: #ccc;
+            line-height: 1.8;
+            font-size: 1.1rem;
+        }
+
+        .demo-card .highlight {
+            color: var(--accent-gold);
+            font-weight: 700;
+        }
+
+        /* Architecture Section */
+        .architecture {
+            padding: 120px 20px;
+            background: #05070a;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 40px;
+            margin-top: 60px;
+        }
+
+        .card {
+            background: rgba(15, 20, 30, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 45px;
+            border-radius: 24px;
+            transition: 0.3s;
+        }
+
+        .card:hover {
+            border-color: var(--accent-blue);
+            background: rgba(15, 20, 30, 0.9);
+            transform: translateY(-8px);
+            box-shadow: 0 15px 50px rgba(0, 242, 255, 0.15);
+        }
+
+        .card h3 {
+            color: var(--accent-blue);
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .card h3 span {
+            font-size: 1.8rem;
+            opacity: 0.5;
+            font-weight: 300;
+        }
+
+        .card p {
+            color: #aaa;
+            line-height: 1.8;
+            font-size: 1.05rem;
+        }
+
+        .card ul {
+            list-style: none;
+            padding: 0;
+            margin: 15px 0 0 0;
+        }
+
+        .card li {
+            color: #999;
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .card li::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: var(--accent-blue);
+            font-weight: bold;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-15px);
+            }
+        }
+
+        .decoration {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .node-blob {
+            position: absolute;
+            border-radius: 50%;
+            background: var(--accent-blue);
+            filter: blur(120px);
+            opacity: 0.06;
+        }
+
+        footer {
+            padding: 80px 20px;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            color: #444;
+            font-size: 0.85rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        @media (max-width: 600px) {
+            .demo-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="decoration">
+        <div class="node-blob" style="width: 700px; height: 700px; top: -10%; left: -10%;"></div>
+        <div class="node-blob"
+            style="width: 600px; height: 600px; bottom: 10%; right: -5%; background: var(--accent-gold);"></div>
+    </div>
+
+    <section class="hero">
+        <div class="logo-container">
+            <svg width="100" height="100" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M50 5L95 27.5V72.5L50 95L5 72.5V27.5L50 5Z" stroke="var(--accent-blue)" stroke-width="3" />
+                <path d="M50 5V95" stroke="rgba(0, 242, 255, 0.3)" stroke-width="1.5" />
+                <path d="M5 27.5L95 72.5" stroke="rgba(0, 242, 255, 0.3)" stroke-width="1.5" />
+                <path d="M95 27.5L5 72.5" stroke="rgba(0, 242, 255, 0.3)" stroke-width="1.5" />
+                <circle cx="50" cy="50" r="12" fill="var(--accent-blue)">
+                    <animate attributeName="r" values="10;16;10" dur="3s" repeatCount="indefinite" />
+                    <animate attributeName="opacity" values="1;0.6;1" dur="3s" repeatCount="indefinite" />
+                </circle>
+            </svg>
+        </div>
+        <h1>NEXUS-0</h1>
+        <p class="tagline">When Infrastructure Fails, We Don't</p>
+
+        <div class="hero-description">
+            <strong>No DNS. No Internet. No Problem.</strong><br>
+            NEXUS-0 is an autonomous mesh intelligence system that self-organizes, elects leadership, and maintains
+            <strong>Deterministic Truth</strong> in disaster zones, conflict areas, and deep-sea operations where
+            traditional cloud-native solutions collapse.
+        </div>
+
+        <div class="cta-container">
+            <a href="/simulation" class="btn btn-primary">🚀 See It Live</a>
+            <a href="/specs" class="btn btn-secondary">📖 Technical Deep-Dive</a>
+        </div>
+    </section>
+
+    <section class="showcase">
+        <div class="container">
+            <div class="section-header">
+                <h2>See NEXUS-0 In Action</h2>
+                <p>Watch autonomous failover, mesh recovery, and deterministic truth consensus in real-time</p>
+            </div>
+
+            <div class="demo-grid">
+                <div class="demo-card">
+                    <img src="/static/mesh_viz.png" alt="10-Node Mesh Visualization">
+                    <div class="demo-card-content">
+                        <h3>🌐 10-Node Autonomous Mesh</h3>
+                        <p>Watch 10 nodes (Alpha through Kappa) self-organize into a distributed mesh using <span
+                                class="highlight">IPv6 Link-Local Multicast</span>. Each node discovers peers, exchanges
+                            cryptographic signatures, and synchronizes via HMAC-Epoch keys—all without DNS or
+                            centralized control.</p>
+                    </div>
+                </div>
+
+                <div class="demo-card">
+                    <img src="/static/failover_demo.png" alt="Autonomous Failover Protocol">
+                    <div class="demo-card-content">
+                        <h3>⚡ Autonomous Failover</h3>
+                        <p>Click "Initiate Failover Protocol" to kill the Anchor node (Alpha). Watch the mesh detect the
+                            failure, wait through a <span class="highlight">hysteresis buffer</span>, and autonomously
+                            promote Beta to Anchor—all in <span class="highlight">&lt;20 seconds</span> with zero human
+                            intervention.</p>
+                    </div>
+                </div>
+
+                <div class="demo-card">
+                    <img src="/static/disaster_scenario.png" alt="Disaster Response Scenario">
+                    <div class="demo-card-content">
+                        <h3>🌪️ Real-World Deployment</h3>
+                        <p>Hurricane zones with destroyed infrastructure. Offshore rigs with satellite link failures.
+                            Conflict zones requiring air-gapped security. NEXUS-0 establishes <span
+                                class="highlight">802.11s mesh networks</span> that work when modern infrastructure
+                            fails.</p>
+                    </div>
+                </div>
+
+                <div class="demo-card">
+                    <img src="/static/deterministic_truth.png" alt="Deterministic Truth Consensus">
+                    <div class="demo-card-content">
+                        <h3>🔐 Deterministic Truth</h3>
+                        <p>No consensus voting. No gossip noise. The node with the highest <span
+                                class="highlight">Ego-Uptime score</span> becomes the Anchor and broadcasts HMAC-Epoch
+                            keys. Invalid signatures are silently dropped, achieving <span class="highlight">95% noise
+                                reduction</span>.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="architecture">
+        <div class="container">
+            <div class="section-header">
+                <h2>The Sovereign Architecture</h2>
+                <p>Zero-configuration networking meets cryptographic truth consensus in a battle-tested framework</p>
+            </div>
+
+            <div class="grid">
+                <div class="card">
+                    <h3><span>01</span> Zero-Config Discovery</h3>
+                    <p>IPv6 Link-Local addressing (fe80::/10) and Multicast (ff02::1) enable auto-discovery on any Layer
+                        2 network—no DHCP, no DNS, no pre-coordination required.</p>
+                    <ul>
+                        <li>Self-assigned addresses via NDP</li>
+                        <li>UDP multicast on port 19541</li>
+                        <li>5-second pulse with Ed25519 signatures</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <h3><span>02</span> Deterministic Anchor Truth</h3>
+                    <p>Ego-Uptime Superiority election establishes a Truth Anchor that broadcasts HMAC-Epoch keys every
+                        60 seconds—no voting, no gossip.</p>
+                    <ul>
+                        <li>95% reduction in security traffic</li>
+                        <li>Silent drop for invalid HMAC/signatures</li>
+                        <li>Ed25519 identity verification</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <h3><span>03</span> Autonomous Failover</h3>
+                    <p>If the Anchor goes silent for 15 seconds, the next highest-Ego node autonomously promotes itself
+                        with zero human intervention.</p>
+                    <ul>
+                        <li>Succession in &lt;500ms after detection</li>
+                        <li>Hysteresis buffer prevents storms</li>
+                        <li>Local peer aging defeats spoofing</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <h3><span>04</span> Rapid Sync Protocol</h3>
+                    <p>New nodes broadcast REQ_EPOCH to immediately receive the current Epoch Key, reducing
+                        mission-readiness latency from 60s to &lt;500ms.</p>
+                    <ul>
+                        <li>Eliminates the "Deaf Window"</li>
+                        <li>Rate-limited to prevent DoS</li>
+                        <li>Cryptographically signed responses</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <h3><span>05</span> 802.11s Mesh Mode</h3>
+                    <p>Wireless chipsets in IEEE 802.11s mode create peer-to-peer MAC-layer bridges—no Access Point
+                        required. The radio IS the wire.</p>
+                    <ul>
+                        <li>Zero configuration (no SSIDs, no WPA)</li>
+                        <li>Self-healing multi-hop relay</li>
+                        <li>Transparent MAC-layer bridging</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <h3><span>06</span> Infrastructure-Agnostic</h3>
+                    <p>Works at 0.0.0.0—even if the OS reports no IPv4 address, the SDK binds to raw link-local
+                        interfaces for instant communication.</p>
+                    <ul>
+                        <li>No DNS, no internet, no cloud</li>
+                        <li>Operates in adversarial vacuums</li>
+                        <li>Battle-tested for 40+ years</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        Sovereign Link Protocol &bull; 0.0.0.0 Standard &bull; Deterministic Truth<br>
+        <a href="/simulation"
+            style="color: var(--accent-blue); text-decoration: none; margin-top: 10px; display: inline-block;">Launch
+            Live Demo →</a>
+    </footer>
+</body>
+
+</html>
